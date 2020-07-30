@@ -1,0 +1,19 @@
+{
+  "name": "poetry2sql",
+  "version": "1.0.0",
+  "description": "chinese poetry data to sql",
+  "main": "/src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "postgreSQL",
+    "poetry"
+  ],
+  "author": "eGluZl",
+  "license": "MIT",
+  "dependencies": {
+    "fs": "0.0.1-security",
+    "pg": "^8.3.0"
+  }
+}
