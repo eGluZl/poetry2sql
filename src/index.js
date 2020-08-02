@@ -24,7 +24,7 @@ function main() {
     //因爲太菜，下面三個函數只能手動分三次執行
     //todo 花間集數據還沒寫導入
 
-    // clearAllTables()
+    clearAllTables()
     // makeAllAuthorsData()
     // makeAllPoetryData()
 }
