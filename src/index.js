@@ -22,9 +22,8 @@ main()
 
 function main() {
     //因爲太菜，下面三個函數只能手動分三次執行
-    //todo 花間集數據還沒寫導入
 
-    clearAllTables()
+    // clearAllTables()
     // makeAllAuthorsData()
     // makeAllPoetryData()
 }
@@ -41,6 +40,7 @@ function clearAllTables() {
     clearTable('shijing', true)
     clearTable('youmengying', true)
     clearTable('sishuwujing', true)
+    clearTable('huajianji', true)
 }
 
 async function makeAllAuthorsData() {
@@ -62,6 +62,7 @@ function makeAllPoetryData(){
     makeShiJingData()
     makeYouMengYingData()
     makeSiShuWuJingData()
+    makeHuaJianJiData()
 }
 
 function query(sql) {
@@ -527,6 +528,41 @@ function makeSiShuWuJingData() {
                     console.error(err)
                 })
             })
+        })
+    })
+}
+
+async function makeHuaJianJiData() {
+    let dirList = []
+    await readDir('wudai/huajianji', /^huajianji-*-*/).then(res => {
+        dirList = res
+    }, err => {
+        console.error(err)
+    })
+    console.log(dirList.length)
+    dirList.forEach(dir => {
+        readFile(path.join(rootDir, `wudai/huajianji/${dir}`)).then(async res => {
+            const json = JSON.parse(res.toString())
+            console.log(`read file: ${dir}, data length: ${json.length}`)
+            const arrives = splitBigArray(json, 1000)
+            arrives.forEach(subArray => {
+                let sql = `insert into huajianji (title, author, rhythmic, notes, roll, content) values `
+                let values = ''
+                subArray.forEach(poetry => {
+                    const content = array2Line(poetry.paragraphs)
+                    const notes= array2Line(poetry.notes)
+                    const roll = dir.split('.')[0].split('jianji-')[1].split('-')[0]
+                    const val = `('${poetry.title}', '${poetry.author}', '${poetry.rhythmic}', '${notes}', '${roll}', '${content}')`
+                    values += values === '' ? val : `,${val}`
+                })
+                sql += values
+                query(sql).then(res => {
+                    console.log(`process ${res.rowCount} data`)
+                }, err => {
+                    console.error(err)
+                })
+            })
+
         })
     })
 }
